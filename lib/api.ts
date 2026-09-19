@@ -37,7 +37,12 @@ import {
   AdminConfigUpdate
 } from "@/types/api";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+// Browser  -> NEXT_PUBLIC_API_URL (set to "/bot-api": same-origin proxy, avoids HTTPS->HTTP blocking + CORS)
+// Server   -> BOT_API_URL (direct call to the bot, e.g. http://host:port/api/v1)
+const IS_SERVER = typeof window === "undefined";
+const BASE_URL = IS_SERVER
+  ? process.env.BOT_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"
+  : process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 const API_KEY = process.env.NEXT_PUBLIC_DASHBOARD_API_KEY;
 
 class ApiError extends Error {
